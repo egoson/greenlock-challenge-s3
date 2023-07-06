@@ -6,6 +6,7 @@ const defaultOptions = {
     , bucketName: null
     , bucketRegion: null
     , directory: "acme-challenge/"
+    , endpoint: null
 };
 
 const s3 = new AWS.S3({ apiVersion: "2006-03-01" });
@@ -20,6 +21,7 @@ module.exports.create = (createOptions) => {
     }
 
     AWS.config.update({
+        endpoint: options.endpoint,
         region: options.bucketRegion
         , credentials: new AWS.Credentials({
             accessKeyId: options.accessKeyId
