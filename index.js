@@ -9,27 +9,20 @@ const defaultOptions = {
     , endpoint: null
 };
 
-const s3 = new AWS.S3({ apiVersion: "2006-03-01" });
+let handlers = null
 
 module.exports.create = (createOptions) => {
+    if (handlers) return handlers
+
     const options = Object.assign({}, defaultOptions, createOptions);
-
-    if (!options.debug) {
-        console = console || {};
-        console.log = () => { };
-        console.error = () => { };
-    }
-
-    AWS.config.update({
-        endpoint: options.endpoint,
-        region: options.bucketRegion
+    const s3 = new AWS.S3({ apiVersion: "2006-03-01", endpoint: options.endpoint, region: options.bucketRegion
         , credentials: new AWS.Credentials({
             accessKeyId: options.accessKeyId
             , secretAccessKey: options.secretAccessKey
         })
     });
 
-    const handlers = {
+    handlers = {
 
         set: (opts) => {
             return require("./lib/set").set(opts, options, s3);
